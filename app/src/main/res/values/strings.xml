@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">APP</string>
+    <string name="mine">我的</string>
+    <string name="about_us">关于我们</string>
+    <!--xrecyclerview-->
+    <string name="listview_header_hint_normal">下拉可以刷新</string>
+    <string name="listview_header_hint_release">释放立即刷新</string>
+    <string name="listview_loading">正在加载...</string>
+    <string name="nomore_loading">亲,已经到底了</string>
+    <string name="refreshing">正在刷新...</string>
+    <string name="refresh_done">刷新完成</string>
+    <string name="loading_done">加载完成</string>
+    <string name="listview_header_last_time">最近更新：</string>
+
+    <string name="phone_send_express">电话寄件</string>
+    <string name="recyclerbin_empty">回收站空空如也</string>
+    <string name="express_check_empty">您还没有签收的快递记录</string>
+    <string name="express_uncheck_empty">您还没有在途的快递记录</string>
+    <string name="express_record_empty">您还没有快递记录</string>
+    <string name="click_add">点+添加</string>
+    <string name="search_express">查找快递</string>
+    <string name="express_num">快递单号</string>
+    <string name="express_company">快递公司</string>
+    <string name="search">查询</string>
+    <string name="select_company">请选择快递公司</string>
+    <string name="input_expressnum">请输入姓名</string>
+    <string name="select_express_company">请输入取货地址</string>
+    <string name="remuneration">请输入报酬</string>
+    <string name="please_input_mobile">请输入手机号</string>
+    <string name="please_input_address">请输入送货地址</string>
+
+    <string name="searching_wait">正在查找，请稍候...</string>
+    <string name="search_result">查询结果</string>
+    <string name="express_detail">快递信息</string>
+    <string name="help_contact">如需帮助请联系</string>
+    <string name="no_result">查无记录</string>
+    <string name="checknum_company">请核对单号与快递公司</string>
+    <string name="edit_remark">修改备注</string>
+    <string name="add_remark">添加备注</string>
+    <string name="add_express">发起代取</string>
+    <string name="scan_express">扫一扫</string>
+    <string name="add_extra_remark">输入备注(可选)</string>
+
+    <string name="share_content">我正在使用@U快递，查询并跟踪快递，快递信息及时掌握！推荐你也试试</string>
+    <string name="share">分享</string>
+
+    <!--dialog-->
+    <string name="dialog_cancel">取消</string>
+    <string name="dialog_ok">确认</string>
+</resources>

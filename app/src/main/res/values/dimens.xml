@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="progress_circle_radius">34dp</dimen>
+    <dimen name="common_circle_width">3dp</dimen>
+    <dimen name="alert_width">300dp</dimen>
+
+    <!--xrecyclerview-->
+    <dimen name="textandiconmargin">10dp</dimen>
+    <!--xrecyclerview-->
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="default_circle_size">100dp</dimen>
+    <dimen name="list_item_height">220dp</dimen>
+    <dimen name="elita_title_bar_height">44dp</dimen>
+
+    <dimen name="elita_margin_10">10dp</dimen>
+
+    <dimen name="elita_margin_4">4dp</dimen>
+
+    <dimen name="elita_margin_2">2dp</dimen>
+
+    <dimen name="elita_margin_3">3dp</dimen>
+
+    <dimen name="elita_margin_5">5dp</dimen>
+
+    <dimen name="elita_margin_6">6dp</dimen>
+
+    <dimen name="elita_margin_7">7dp</dimen>
+
+    <dimen name="elita_margin_26">26dp</dimen>
+
+    <dimen name="elita_margin_20">20dp</dimen>
+
+    <dimen name="elita_margin_1">1dp</dimen>
+
+    <dimen name="elita_margin_12">12dp</dimen>
+
+    <dimen name="elita_margin_15">15dp</dimen>
+
+    <dimen name="elita_margin_16">16dp</dimen>
+
+    <dimen name="elita_margin_17">17dp</dimen>
+
+    <dimen name="elita_margin_22">22dp</dimen>
+
+    <dimen name="elita_margin_227">227dp</dimen>
+
+    <dimen name="elita_margin_130">130dp</dimen>
+
+    <dimen name="elita_padding_10">10dp</dimen>
+
+    <dimen name="elita_padding_5">5dp</dimen>
+
+    <dimen name="elita_padding_3">3dp</dimen>
+
+    <dimen name="elita_padding_9">9dp</dimen>
+
+    <dimen name="elita_margin_18">18dp</dimen>
+
+    <dimen name="elita_margin_42">42dp</dimen>
+
+    <dimen name="elita_margin_50">50dp</dimen>
+
+    <dimen name="elita_margin_05">0.5dp</dimen>
+    <dimen name="elita_margin_64">64dp</dimen>
+
+    <dimen name="elita_margin_67">67dp</dimen>
+    <dimen name="font5" >5sp</dimen>
+    <dimen name="font6" >6sp</dimen>
+    <dimen name="font7" >7sp</dimen>
+    <dimen name="font8" >8sp</dimen>
+
+    <dimen name="font9" >9sp</dimen>
+    <dimen name="font10" >10sp</dimen>
+
+    <dimen name="font11" >11sp</dimen>
+
+    <dimen name="font12" >12sp</dimen>
+    <dimen name="font13" >13sp</dimen>
+    <dimen name="font14" >14sp</dimen>
+    <dimen name="font15" >15sp</dimen>
+    <dimen name="font16" >16sp</dimen>
+    <dimen name="font17" >17sp</dimen>
+    <dimen name="font18" >18sp</dimen>
+    <dimen name="font19" >19sp</dimen>
+</resources>
