@@ -103,43 +103,46 @@ public class DetailsActivity extends BaseActivity {
                             mDelOrder.setVisibility(View.VISIBLE);
                             if(!phone_num.equals(o.getUser_id())){
                                 mDelOrder.setVisibility(View.GONE);
-
                             }else {
                                 mDelOrder.setVisibility(View.VISIBLE);
-
                             }
                             mEndTime.setVisibility(View.GONE);
                             break;
                         case 1:
-                            mDelOrder.setVisibility(View.GONE);
-                            mOtherBtn.setText("送货中");
+                            mOtherBtn.setText("确认送到");
                             mOrderType.setText("您的货物正在运送中...");
                             mEndTime.setVisibility(View.GONE);
-
+                            mDelOrder.setVisibility(View.GONE);
                             break;
                         case 2:
-                            mDelOrder.setVisibility(View.GONE);
-//                            mOtherBtn.setText("已代取");
                             mOrderType.setText("您的货物已送到");
                             mEndTime.setVisibility(View.GONE);
-                            if(phone_num.equals(o.getReceive_id())){
-                                mOtherBtn.setText("确认送到");
+//                            if(phone_num.equals(o.getReceive_id()))
+                            if(phone_num.equals(o.getUser_id())){
+                                mOtherBtn.setText("确认收货");
                                 mOtherBtn.setVisibility(View.VISIBLE);
+                            }else {
+                                mOrderType.setText("等待货主确认收货");
+                                mOrderType.setVisibility(View.VISIBLE);
+                                mOtherBtn.setVisibility(View.GONE);
                             }
+                            mDelOrder.setVisibility(View.GONE);
+
                             break;
                         case 3:
-                            if(phone_num.equals(o.getUser_id())){
-                                mOtherBtn.setVisibility(View.VISIBLE);
-                                mOtherBtn.setText("确认收货");
-                            }
-                            break;
-                        case 4:
-                            mDelOrder.setVisibility(View.VISIBLE);
                             mOtherBtn.setVisibility(View.GONE);
-                            mOrderType.setText("订单完成");
-                            mEndTime.setVisibility(View.VISIBLE);
                             mEndTime.setText("结束时间："+o.getUpdatedAt());
+                            mOrderType.setText("订单完成");
+                            mDelOrder.setVisibility(View.VISIBLE);
+                            mEndTime.setVisibility(View.VISIBLE);
+//                            if(phone_num.equals(o.getUser_id())){
+//                                mOtherBtn.setVisibility(View.VISIBLE);
+//                                mOtherBtn.setText("确认收货");
+//                            }
                             break;
+//                        case 4:
+//                            mOtherBtn.setVisibility(View.GONE);
+//                            break;
 
 
                     }
@@ -198,7 +201,7 @@ public class DetailsActivity extends BaseActivity {
                                     order.update(objId,new UpdateListener() {
                                         @Override
                                         public void done(BmobException e) {
-                                            mOtherBtn.setText("送货中");
+                                            mOtherBtn.setText("确认送到");
 
                                         }
                                     });
@@ -216,16 +219,21 @@ public class DetailsActivity extends BaseActivity {
                         case 1:
                             final AlertDialog.Builder builder1 = new AlertDialog.Builder(DetailsActivity.this);
                             final AlertDialog alertDialog1 = builder1.create();
-                            builder1.setMessage("快递是否送到？");
+                            builder1.setMessage("是否确认送到？");
                             builder1.setNegativeButton("确认", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Order order = new Order();
+                                    final Order order = new Order();
                                     order.setType(2);
                                     order.update(objId,new UpdateListener() {
                                         @Override
                                         public void done(BmobException e) {
                                             mOtherBtn.setText("已代取");
+                                            if(phone_num.equals(order.getReceive_id())){
+                                                mOrderType.setText("等待货主确认收货");
+
+                                            }
+                                            mOtherBtn.setVisibility(View.GONE);
 
                                         }
                                     });
@@ -240,7 +248,7 @@ public class DetailsActivity extends BaseActivity {
                             builder1.show();
                             break;
                         case 2:
-                            if(phone_num.equals(receive_id)){
+                            if(phone_num.equals(user_id)){
                                 final AlertDialog.Builder builder2 = new AlertDialog.Builder(DetailsActivity.this);
                                 final AlertDialog alertDialog2 = builder2.create();
                                 builder2.setMessage("快递是否送到？");
@@ -254,6 +262,7 @@ public class DetailsActivity extends BaseActivity {
                                             public void done(BmobException e) {
                                                 mOrderType.setText("订单完成");
                                                 mOtherBtn.setVisibility(View.GONE);
+                                                mDelOrder.setVisibility(View.VISIBLE);
                                             }
                                         });
                                     }
@@ -268,32 +277,32 @@ public class DetailsActivity extends BaseActivity {
 
                             }
                             break;
-                    case 3:
-                        final AlertDialog.Builder builder2 = new AlertDialog.Builder(DetailsActivity.this);
-                        final AlertDialog alertDialog2 = builder2.create();
-                        builder2.setMessage("快递是否收到？");
-                        builder2.setNegativeButton("确认", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Order order = new Order();
-                                order.setType(4);
-                                order.update(objId,new UpdateListener() {
-                                    @Override
-                                    public void done(BmobException e) {
-                                        mOrderType.setText("订单完成");
-                                        mOtherBtn.setVisibility(View.GONE);
-                                    }
-                                });
-                            }
-                        });
-                        builder2.setPositiveButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                alertDialog2.dismiss();
-                            }
-                        });
-                        builder2.show();
-                        break;
+//                    case 3:
+//                        final AlertDialog.Builder builder2 = new AlertDialog.Builder(DetailsActivity.this);
+//                        final AlertDialog alertDialog2 = builder2.create();
+//                        builder2.setMessage("快递是否收到？");
+//                        builder2.setNegativeButton("确认", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                Order order = new Order();
+//                                order.setType(4);
+//                                order.update(objId,new UpdateListener() {
+//                                    @Override
+//                                    public void done(BmobException e) {
+//                                        mOrderType.setText("订单完成");
+//                                        mOtherBtn.setVisibility(View.GONE);
+//                                    }
+//                                });
+//                            }
+//                        });
+//                        builder2.setPositiveButton("取消", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                alertDialog2.dismiss();
+//                            }
+//                        });
+//                        builder2.show();
+//                        break;
 
 
                 }

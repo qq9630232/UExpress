@@ -66,6 +66,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <LinearLayout
+
         android:gravity="bottom|right"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -73,6 +74,7 @@
             android:id="@+id/del_order"
             android:background="@drawable/btn_bg_blue"
             android:padding="5dp"
+            android:visibility="gone"
             android:textColor="@color/white"
             android:text="删除订单"
             android:layout_marginRight="10dp"
@@ -84,6 +86,7 @@
             android:padding="5dp"
             android:background="@drawable/btn_bg_blue"
             android:textColor="@color/white"
+            android:visibility="gone"
 
             android:text="其它操作"
             android:layout_width="wrap_content"

@@ -50,12 +50,7 @@ public class ExpressOrderAdapter extends BaseRecyclerViewAdapter<Order> {
             itemCheckTime.setVisibility(View.INVISIBLE);
         }
 
-//        if(!item.getUser_id().equals(SPUtil.getString(mContext, "phone_num"))){
-//            mItemLl.setVisibility(View.GONE);
-//        }else {
-//            mItemLl.setVisibility(View.VISIBLE);
-//        }
-//        UnreadView unreadView = holder.getView(R.id.item_notice);
+
         final LinearLayout llayout = holder.getView(R.id.llayout_time);
         itemName.setText(item.getName());
         mMobileTv.setText("手机号:"+item.getUser_mobile());
@@ -67,27 +62,35 @@ public class ExpressOrderAdapter extends BaseRecyclerViewAdapter<Order> {
                 mItemType.setText("未代取");
                 itemCheckTime.setText("等待接单中...");
                 break;
+//            case 1:
+//                mItemType.setText("送货中");
+//                itemCheckTime.setText("您的货物正在运送中...");
+//                break;
             case 1:
-                mItemType.setText("送货中");
                 itemCheckTime.setText("您的货物正在运送中...");
+                if(phone_num.equals(item.getReceive_id())){
+                    mItemType.setVisibility(View.VISIBLE);
+                    mItemType.setText("确认送到");
+                }else {
+                    mItemType.setVisibility(View.GONE);
+                }
                 break;
             case 2:
                 itemCheckTime.setText("您的货物已送到");
                 if(phone_num.equals(item.getUser_id())){
                     mItemType.setVisibility(View.VISIBLE);
                     mItemType.setText("确认收货");
-
                 }else {
+                    itemCheckTime.setText("等待货主确认收货");
                     mItemType.setVisibility(View.GONE);
-//                    mItemType.setText("确认送到");
 
+                    itemCheckTime.setVisibility(View.VISIBLE);
                 }
                 break;
             case 3:
                 itemCheckTime.setText("订单完成");
                 itemCheckTime.setVisibility(View.VISIBLE);
                 mItemType.setVisibility(View.GONE);
-
                 break;
 
 
@@ -119,7 +122,13 @@ public class ExpressOrderAdapter extends BaseRecyclerViewAdapter<Order> {
                                 order.update(objectId,new UpdateListener() {
                                     @Override
                                     public void done(BmobException e) {
-                                        mItemType.setText("送货中");
+//                                        if(e!=null){
+                                            mItemType.setText("确认送到");
+
+
+//                                        }else {
+//                                            Toast.makeText(mContext,"操作失败请重试",Toast.LENGTH_SHORT).show();
+//                                        }
 
                                     }
                                 });
@@ -137,7 +146,7 @@ public class ExpressOrderAdapter extends BaseRecyclerViewAdapter<Order> {
                     case 1:
                         final AlertDialog.Builder builder1 = new AlertDialog.Builder(mContext);
                         final AlertDialog alertDialog1 = builder1.create();
-                        builder1.setMessage("快递是否送到？");
+                        builder1.setMessage("是否确认送到？");
                         builder1.setNegativeButton("确认", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -147,8 +156,12 @@ public class ExpressOrderAdapter extends BaseRecyclerViewAdapter<Order> {
                                 order.update(objectId,new UpdateListener() {
                                     @Override
                                     public void done(BmobException e) {
-                                        mItemType.setText("已代取");
+//                                        mItemType.setText("确认收货");
+                                        if(phone_num.equals(item.getReceive_id())){
+                                            itemCheckTime.setText("等待货主确认收货");
 
+                                        }
+                                        mItemType.setVisibility(View.GONE);
                                     }
                                 });
                             }

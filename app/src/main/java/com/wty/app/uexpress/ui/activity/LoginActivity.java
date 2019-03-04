@@ -234,7 +234,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     changeBtnGetCode();
                 }else {
                     Toast.makeText(LoginActivity.this,"手机号格式错误，请检查",Toast.LENGTH_SHORT).show();
-
                 }
 
                 break;
