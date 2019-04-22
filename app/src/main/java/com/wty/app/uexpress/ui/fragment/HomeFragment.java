@@ -234,7 +234,7 @@ public class HomeFragment extends BaseFragment {
             public void OnItemClick(Object item, int position) {
                 Order o = (Order) item;
                 Intent intent = new Intent(getContext(), DetailsActivity.class);
-                intent.putExtra("objId",o.getObjectId());
+                intent.putExtra("order",o);
                 startActivity(intent);
             }
         });

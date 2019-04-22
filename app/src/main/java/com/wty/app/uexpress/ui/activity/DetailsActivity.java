@@ -3,10 +3,12 @@ package com.wty.app.uexpress.ui.activity;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.wty.app.uexpress.R;
+import com.wty.app.uexpress.data.model.Money;
 import com.wty.app.uexpress.data.model.Order;
 import com.wty.app.uexpress.ui.BaseActivity;
 import com.wty.app.uexpress.util.SPUtil;
@@ -48,6 +50,7 @@ public class DetailsActivity extends BaseActivity {
     private String phone_num;
     private String user_id;
     private String receive_id;
+    private Order order;
 
     @Override
     protected int getContentLayout() {
@@ -56,7 +59,9 @@ public class DetailsActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        objId = getIntent().getStringExtra("objId");
+        order = (Order) getIntent().getSerializableExtra("order");
+
+        objId = order.getObjectId();
         phone_num = SPUtil.getString(DetailsActivity.this, "phone_num");
 
         getDefaultNavigation().setTitle(getString(R.string.express_detail))
@@ -263,6 +268,17 @@ public class DetailsActivity extends BaseActivity {
                                                 mOrderType.setText("订单完成");
                                                 mOtherBtn.setVisibility(View.GONE);
                                                 mDelOrder.setVisibility(View.VISIBLE);
+                                            }
+                                        });
+                                        Money money = new Money();
+                                        money.setMoney(50);
+                                        money.setReceive_id(order.getReceive_id());
+                                        money.update(order.getObjectId(), new UpdateListener() {
+                                            @Override
+                                            public void done(BmobException e) {
+                                                Log.e("zxz",""+e.getErrorCode());
+                                                Log.e("zxz","修改成功");
+
                                             }
                                         });
                                     }

@@ -1,10 +1,12 @@
 package com.wty.app.uexpress.data.model;
 
+import java.io.Serializable;
+
 /**
  * Created by SDC on 2019/3/1.
  */
 
-public class Order extends BObj {
+public class Order extends BObj implements Serializable {
     private String user_id;
     private String receive_id;
     private String name;
