@@ -1,33 +1,32 @@
 package com.wty.app.uexpress.ui.fragment;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.wty.app.uexpress.R;
-import com.wty.app.uexpress.data.model.Order;
+import com.wty.app.uexpress.data.model.Orders;
 import com.wty.app.uexpress.task.SimpleTask;
 import com.wty.app.uexpress.ui.BaseFragment;
 import com.wty.app.uexpress.ui.OnActivityResultListener;
-import com.wty.app.uexpress.ui.activity.DetailsActivity;
 import com.wty.app.uexpress.ui.adapter.ExpressOrderAdapter;
 import com.wty.app.uexpress.util.CoreRegexUtil;
 import com.wty.app.uexpress.util.CoreScreenUtil;
-import com.wty.app.uexpress.util.CoreTimeUtils;
 import com.wty.app.uexpress.util.DataUtils;
 import com.wty.app.uexpress.util.SPUtil;
 import com.wty.app.uexpress.widget.common.ClearEditText;
 import com.wty.app.uexpress.widget.common.ListViewEmptyLayout;
-import com.wty.app.uexpress.widget.xrecyclerview.XRecyclerView;
-import com.wty.app.uexpress.widget.xrecyclerview.adapter.BaseRecyclerViewAdapter;
 import com.zyyoona7.lib.EasyPopup;
 import com.zyyoona7.lib.HorizontalGravity;
 import com.zyyoona7.lib.VerticalGravity;
@@ -36,10 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.UpdateListener;
 import io.github.xudaojie.qrcodelib.CaptureActivity;
 /**
  * @author wty
@@ -48,19 +43,20 @@ import io.github.xudaojie.qrcodelib.CaptureActivity;
 public class HomeFragment extends BaseFragment {
 
     public static final String TAG = "HomeFragment";
-//    @BindView(R.id.fragment_home_tablayout)
-//    TabLayout tablayout;
-//    @BindView(R.id.fragment_home_viewpager)
-//    ViewPager viewpager;
-
+    @BindView(R.id.fragment_home_tablayout)
+    TabLayout tablayout;
+    @BindView(R.id.fragment_home_viewpager)
+    ViewPager viewpager;
+    private List<String> list = new ArrayList<>();
+    private List<Fragment> fragments = new ArrayList<>();
 //    BroadcastReceiver receiver;
 //    Map<String, BaseFragment> fragments = new LinkedHashMap<>();
 //    private String companycode;
 //    private SimpleTask task;
 //    private SimpleDialogTask expressinfotask;
 //    GetCompanyByExpressNumEntity entity;
-    @BindView(R.id.xrv)
-    XRecyclerView listview;
+//    @BindView(R.id.xrv)
+//    XRecyclerView listview;
 
     protected ExpressOrderAdapter adapter;
     protected SimpleTask refreshtask;
@@ -121,7 +117,7 @@ public class HomeFragment extends BaseFragment {
 //            @Override
 //            protected void onPostExecute(Object o) {
 //                listview.refreshComplete(CoreTimeUtils.getNowTime());
-//                List<Order> result = (List<Order>) o;
+//                List<Orders> result = (List<Orders>) o;
 //                adapter.refreshList(result);
 //            }
 //        };
@@ -131,34 +127,34 @@ public class HomeFragment extends BaseFragment {
     /**
      * 获取最新服务列表
      **/
-    private void refreshServiceList(){
-        if(refreshtask != null && refreshtask.getStatus() == AsyncTask.Status.RUNNING){
-            return;
-        }
-        BmobQuery<Order> bmobQuery = new BmobQuery<Order>();
-        bmobQuery.findObjects(new FindListener<Order>() {
-            @Override
-            public void done(List<Order> list, BmobException e) {
-                if(list!=null){
-                    for (int i = 0;i<list.size();i++){
-                        String receive_id = list.get(i).getReceive_id();
-                        String user_id = list.get(i).getUser_id();
-
-                        if(!TextUtils.isEmpty(receive_id)){
-                            if(!receive_id.equals(phone_num)&&!user_id.equals(phone_num)){
-                                list.remove(i);
-                            }
-                        }
-
-                    }
-//                List<Order> result = (List<Order>) o;
-                    adapter.refreshList(list);
-                }
-                listview.refreshComplete(CoreTimeUtils.getNowTime());
-
-
-            }
-        });
+//    private void refreshServiceList(){
+//        if(refreshtask != null && refreshtask.getStatus() == AsyncTask.Status.RUNNING){
+//            return;
+//        }
+//        BmobQuery<Orders> bmobQuery = new BmobQuery<Orders>();
+//        bmobQuery.findObjects(new FindListener<Orders>() {
+//            @Override
+//            public void done(List<Orders> list, BmobException e) {
+//                if(list!=null){
+//                    for (int i = 0;i<list.size();i++){
+//                        String receive_id = list.get(i).getReceive_id();
+//                        String user_id = list.get(i).getUser_id();
+//
+//                        if(!TextUtils.isEmpty(receive_id)){
+//                            if(!receive_id.equals(phone_num)&&!user_id.equals(phone_num)){
+//                                list.remove(i);
+//                            }
+//                        }
+//
+//                    }
+////                List<Orders> result = (List<Orders>) o;
+//                    adapter.refreshList(list);
+//                }
+//                listview.refreshComplete(CoreTimeUtils.getNowTime());
+//
+//
+//            }
+//        });
 //        refreshtask = new SimpleTask() {
 //            @Override
 //            protected Object doInBackground(String... params) {
@@ -169,12 +165,12 @@ public class HomeFragment extends BaseFragment {
 //            @Override
 //            protected void onPostExecute(Object o) {
 ////                listview.refreshComplete(CoreTimeUtils.getNowTime());
-////                List<Order> result = (List<Order>) o;
+////                List<Orders> result = (List<Orders>) o;
 ////                adapter.refreshList(result);
 //            }
 //        };
 //        refreshtask.startTask();
-    }
+//    }
     @Override
     public void onDestroy() {
         if(refreshtask != null && refreshtask.getStatus() == AsyncTask.Status.RUNNING){
@@ -196,6 +192,68 @@ public class HomeFragment extends BaseFragment {
 
     @Override
     protected void onInitView() {
+        list.add("未接单");
+        list.add("已接单");
+        fragments.add(new OrderFragment());
+        fragments.add(new SecondFragment());
+
+        viewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        viewpager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
+            //得到当前页的标题,,,也就是设置当前页面显示的标题是tab对应的标题
+            @Override
+            public CharSequence getPageTitle(int position) {
+
+                return list.get(position);
+            }
+
+            @Override
+            public Fragment getItem(int position) {
+                //一般我们在这个位置对比一下标题是什么,,,然后返回对应的fragment
+                //初始化fragment  对应position有多少，fragment有多少
+//                OrderFragment newsFragment = new OrderFragment();
+//                //初始化bundle （数据盒子，装数据元素）
+//                Bundle bundle = new Bundle();
+//                bundle.putString("name",list.get(position).toString());
+//                newsFragment.setArguments(bundle);
+                return fragments.get(position);
+            }
+
+            @Override
+            public int getCount() {
+                if(list==null){
+                    return 0;
+                }
+                return list.size();
+            }
+            // 初始化每个页卡选项
+            @Override
+            public Object instantiateItem(ViewGroup arg0, int arg1) {
+                // TODO Auto-generated method stub
+                return super.instantiateItem(arg0, arg1);
+            }
+
+            @Override
+            public void destroyItem(ViewGroup container, int position, Object object) {
+                System.out.println( "position Destory" + position);
+                super.destroyItem(container, position, object);
+            }
+        });
+        tablayout.setupWithViewPager(viewpager);
 //        fragments.put(ExpressUnCheckFragment.TAG, new ExpressUnCheckFragment());
 //        fragments.put(ExpressCheckFragment.TAG, new ExpressCheckFragment());
 //        fragments.put(ExpressAllFragment.TAG, new ExpressAllFragment());
@@ -207,70 +265,71 @@ public class HomeFragment extends BaseFragment {
 //        viewpager.setAdapter(adapter);
 //        viewpager.setOffscreenPageLimit(2);
 //        tablayout.setupWithViewPager(viewpager);
-//        tablayout.setTabTextColors(getResources().getColor(R.color.bottom_normal), getResources().getColor(R.color.bottom_click));
+        tablayout.setTabTextColors(getResources().getColor(R.color.bottom_normal), getResources().getColor(R.color.bottom_click));
+
         phone_num = SPUtil.getString(getContext(), "phone_num");
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        listview.setLayoutManager(layoutManager);
-        listview.setPullRefreshEnabled(true);
-        listview.setLoadingMoreEnabled(false);
-        listview.addItemDecoration(new XRecyclerView.DivItemDecoration(activity,2,false));
-        listview.setLoadingListener(new XRecyclerView.LoadingListener() {
-            @Override
-            public void onRefresh() {
-                refreshServiceList();
-            }
-
-            @Override
-            public void onLoadMore() {
-
-            }
-        });
-        List<Order> data = new ArrayList<>();
-        adapter = new ExpressOrderAdapter(getActivity(),data);
-        listview.setAdapter(adapter);
-        adapter.setOnRecyclerItemClickListener(new BaseRecyclerViewAdapter.OnRecyclerItemClickListener() {
-            @Override
-            public void OnItemClick(Object item, int position) {
-                Order o = (Order) item;
-                Intent intent = new Intent(getContext(), DetailsActivity.class);
-                intent.putExtra("order",o);
-                startActivity(intent);
-            }
-        });
-        adapter.setOnItemLongClickLitener(new BaseRecyclerViewAdapter.OnItemLongClickLitener() {
-            @Override
-            public void onItemLongClick(View view, Object item) {
-                final Order o = (Order) item;
-                int type = o.getType();
-                if(type==0||type==3){
-                    final AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
-                    final AlertDialog alertDialog1 = builder1.create();
-                    builder1.setMessage("是否删除当前订单？");
-                    builder1.setNegativeButton("确认", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            new Order().delete(o.getObjectId(),new UpdateListener() {
-                                @Override
-                                public void done(BmobException e) {
-                                    refreshServiceList();
-                                }
-                            });
-                        }
-                    });
-                    builder1.setPositiveButton("取消", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            alertDialog1.dismiss();
-                        }
-                    });
-                    builder1.show();
-                }
-            }
-        });
-//        adapter.setOnItemLongClickLitener(new BaseRecyclerViewAdapter.OnItemLongClickLitener<Order>() {
+//        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+//        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+//        listview.setLayoutManager(layoutManager);
+//        listview.setPullRefreshEnabled(true);
+//        listview.setLoadingMoreEnabled(false);
+//        listview.addItemDecoration(new XRecyclerView.DivItemDecoration(activity,2,false));
+//        listview.setLoadingListener(new XRecyclerView.LoadingListener() {
 //            @Override
-//            public void onItemLongClick(View view, final Order item) {
+//            public void onRefresh() {
+//                refreshServiceList();
+//            }
+//
+//            @Override
+//            public void onLoadMore() {
+//
+//            }
+//        });
+//        List<Orders> data = new ArrayList<>();
+//        adapter = new ExpressOrderAdapter(getActivity(),data);
+//        listview.setAdapter(adapter);
+//        adapter.setOnRecyclerItemClickListener(new BaseRecyclerViewAdapter.OnRecyclerItemClickListener() {
+//            @Override
+//            public void OnItemClick(Object item, int position) {
+//                Orders o = (Orders) item;
+//                Intent intent = new Intent(getContext(), DetailsActivity.class);
+//                intent.putExtra("order",o);
+//                startActivity(intent);
+//            }
+//        });
+//        adapter.setOnItemLongClickLitener(new BaseRecyclerViewAdapter.OnItemLongClickLitener() {
+//            @Override
+//            public void onItemLongClick(View view, Object item) {
+//                final Orders o = (Orders) item;
+//                int type = o.getType();
+//                if(type==0||type==3){
+//                    final AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
+//                    final AlertDialog alertDialog1 = builder1.create();
+//                    builder1.setMessage("是否删除当前订单？");
+//                    builder1.setNegativeButton("确认", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            new Orders().delete(o.getObjectId(),new UpdateListener() {
+//                                @Override
+//                                public void done(BmobException e) {
+//                                    refreshServiceList();
+//                                }
+//                            });
+//                        }
+//                    });
+//                    builder1.setPositiveButton("取消", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            alertDialog1.dismiss();
+//                        }
+//                    });
+//                    builder1.show();
+//                }
+//            }
+//        });
+//        adapter.setOnItemLongClickLitener(new BaseRecyclerViewAdapter.OnItemLongClickLitener<Orders>() {
+//            @Override
+//            public void onItemLongClick(View view, final Orders item) {
 //                if(item.getRecstatus()==1){
 //                    //启用状态
 //                    final EasyPopup popup = new EasyPopup(activity)
@@ -335,8 +394,8 @@ public class HomeFragment extends BaseFragment {
 
         ListViewEmptyLayout emptylayout = new ListViewEmptyLayout(getActivity());
         emptylayout.setEmptyText(emptytext_up,emptytext_down);
-        listview.addHeaderEmptyView(emptylayout);
-        refreshServiceList();
+//        listview.addHeaderEmptyView(emptylayout);
+//        refreshServiceList();
 
     }
 
@@ -389,10 +448,6 @@ public class HomeFragment extends BaseFragment {
         });
     }
 
-//    @OnClick(R.id.iv_search)
-//    public void onViewClicked() {
-//        ExpressSearchListActivity.startActivity(activity);
-//    }
     private boolean isMobileNO(String phone) {
        /*
     移动：134、135、136、137、138、139、150、151、157(TD)、158、159、187、188
@@ -435,19 +490,21 @@ public class HomeFragment extends BaseFragment {
                 }else if(TextUtils.isEmpty(etSendAddress.getText().toString())){
                     Toast.makeText(getContext(),"送货地址不能为空",Toast.LENGTH_SHORT).show();
                 }else {
-                    Order order = new Order();
-                    order.setUser_id(SPUtil.getString(getContext(), "phone_num"));
-                    order.setName(et_expressnum.getText().toString());
-                    order.setUser_mobile(mEtMobile.getText().toString());
-                    order.setMoney(etRemuneration.getText().toString());
-                    order.setPic_address(etPickAddress.getText().toString());
-                    order.setSend_address(etSendAddress.getText().toString());
-                    order.setReceive_id("");
-                    order.setType(0);
+                    Orders orders = new Orders();
+                    orders.setUser_id(SPUtil.getString(getContext(), "phone_num"));
+                    orders.setName(et_expressnum.getText().toString());
+                    orders.setUser_mobile(mEtMobile.getText().toString());
+                    orders.setMoney(etRemuneration.getText().toString());
+                    orders.setPic_address(etPickAddress.getText().toString());
+                    orders.setSend_address(etSendAddress.getText().toString());
+                    orders.setReceive_id("");
+                    orders.setType(0);
+
                     DataUtils dataUtils = new DataUtils(getContext());
-                    dataUtils.save(order);
-                    refreshServiceList();
+                    dataUtils.save(orders);
                     dialog.dismiss();
+
+//                    refreshServiceList();
                 }
             }
         });

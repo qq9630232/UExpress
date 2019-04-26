@@ -4,14 +4,12 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.wty.app.uexpress.data.model.BObj;
-import com.wty.app.uexpress.data.model.Order;
+import com.wty.app.uexpress.data.model.Orders;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
 
 /**
@@ -29,23 +27,21 @@ public class DataUtils<T> {
 //            }
 //        });
 //    }
-    public List<Order> lists = new ArrayList<>();
+    public List<Orders> lists = new ArrayList<>();
     private Context context;
     public DataUtils(Context context) {
         this.context=context;
     }
+    boolean  send = false;
 
     public  void save(BObj o){
-
         o.save(new SaveListener<String>() {
             @Override
             public void done(String objectId,BmobException e) {
                 if(e==null){
                     Toast.makeText(context,"发起成功",Toast.LENGTH_SHORT).show();
-                    return ;
                 }else{
-                    Toast.makeText(context,"发起失败",Toast.LENGTH_SHORT).show();
-
+                    Toast.makeText(context,"发起失败"+e.getMessage(),Toast.LENGTH_SHORT).show();
                 }
             }
         });

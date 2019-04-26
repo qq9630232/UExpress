@@ -6,7 +6,7 @@ package com.wty.app.uexpress.data.model;
 
 public class Money  extends BObj {
     private String receive_id;
-    private int money;
+    private String money;
 
 
     public String getReceive_id() {
@@ -17,11 +17,11 @@ public class Money  extends BObj {
         this.receive_id = receive_id;
     }
 
-    public int getMoney() {
+    public String getMoney() {
         return money;
     }
 
-    public void setMoney(int money) {
+    public void setMoney(String money) {
         this.money = money;
     }
 

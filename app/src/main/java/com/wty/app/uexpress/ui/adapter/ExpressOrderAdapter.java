@@ -9,29 +9,34 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.wty.app.uexpress.R;
-import com.wty.app.uexpress.data.model.Order;
+import com.wty.app.uexpress.data.model.MessageEvent;
+import com.wty.app.uexpress.data.model.Money;
+import com.wty.app.uexpress.data.model.Orders;
 import com.wty.app.uexpress.util.SPUtil;
 import com.wty.app.uexpress.widget.roundedimageview.RoundedImageView;
 import com.wty.app.uexpress.widget.xrecyclerview.adapter.BaseRecyclerViewAdapter;
 import com.wty.app.uexpress.widget.xrecyclerview.adapter.BaseRecyclerViewHolder;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 
 /**
  * @author wty
  *         快递列表适配器
  */
-public class ExpressOrderAdapter extends BaseRecyclerViewAdapter<Order> {
+public class ExpressOrderAdapter extends BaseRecyclerViewAdapter<Orders> {
 
-    public ExpressOrderAdapter(Context context, List<Order> list) {
+    public ExpressOrderAdapter(Context context, List<Orders> list) {
         super(context, R.layout.item_express_list, list);
     }
 
     @Override
-    protected void convert(BaseRecyclerViewHolder holder, final Order item, final int position) {
+    protected void convert(BaseRecyclerViewHolder holder, final Orders item, final int position) {
         RoundedImageView itemIcon = holder.getView(R.id.item_icon);
         LinearLayout mItemLl = holder.getView(R.id.item_ll);
         TextView itemName = holder.getView(R.id.item_name);
@@ -39,8 +44,7 @@ public class ExpressOrderAdapter extends BaseRecyclerViewAdapter<Order> {
         TextView itemStep = holder.getView(R.id.item_step);
         final TextView itemCheckTime = holder.getView(R.id.item_check_time);
         final TextView mItemType = holder.getView(R.id.item_type);
-        Log.e("zxz",item.getUser_id());
-        Log.e("zxz",SPUtil.getString(mContext, "phone_num"));
+
         final String phone_num = SPUtil.getString(mContext, "phone_num");
         if(item.getUser_id().equals(phone_num)){
             mItemType.setVisibility(View.GONE);
@@ -91,17 +95,11 @@ public class ExpressOrderAdapter extends BaseRecyclerViewAdapter<Order> {
                 itemCheckTime.setText("订单完成");
                 itemCheckTime.setVisibility(View.VISIBLE);
                 mItemType.setVisibility(View.GONE);
+
                 break;
 
 
         }
-//        mItemLl.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Toast.makeText(mContext,"失败:",Toast.LENGTH_SHORT).show();
-//
-//            }
-//        });
 
         mItemType.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,21 +113,16 @@ public class ExpressOrderAdapter extends BaseRecyclerViewAdapter<Order> {
                         builder.setNegativeButton("确认", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Order order = new Order();
-                                order.setType(1);
-                                order.setReceive_id(SPUtil.getString(mContext, "phone_num"));
+                                Orders orders = new Orders();
+                                orders.setType(1);
+                                orders.setReceive_id(SPUtil.getString(mContext, "phone_num"));
                                 Log.e("zxz", "onClick: "+objectId );
-                                order.update(objectId,new UpdateListener() {
+                                orders.update(objectId,new UpdateListener() {
                                     @Override
                                     public void done(BmobException e) {
-//                                        if(e!=null){
                                             mItemType.setText("确认送到");
-
-
-//                                        }else {
-//                                            Toast.makeText(mContext,"操作失败请重试",Toast.LENGTH_SHORT).show();
-//                                        }
-
+                                        MessageEvent messageEvent = new MessageEvent(true);
+                                        EventBus.getDefault().post(messageEvent);
                                     }
                                 });
                             }
@@ -150,10 +143,10 @@ public class ExpressOrderAdapter extends BaseRecyclerViewAdapter<Order> {
                         builder1.setNegativeButton("确认", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Order order = new Order();
-                                order.setType(2);
+                                Orders orders = new Orders();
+                                orders.setType(2);
                                 Log.e("zxz", "onClick: "+objectId );
-                                order.update(objectId,new UpdateListener() {
+                                orders.update(objectId,new UpdateListener() {
                                     @Override
                                     public void done(BmobException e) {
 //                                        mItemType.setText("确认收货");
@@ -182,14 +175,25 @@ public class ExpressOrderAdapter extends BaseRecyclerViewAdapter<Order> {
                             builder2.setNegativeButton("确认", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Order order = new Order();
-                                    order.setType(3);
+                                    Orders orders = new Orders();
+                                    orders.setType(3);
                                     Log.e("zxz", "onClick: "+objectId );
-                                    order.update(objectId,new UpdateListener() {
+                                    orders.update(objectId,new UpdateListener() {
                                         @Override
                                         public void done(BmobException e) {
                                             itemCheckTime.setText("订单完成");
                                             mItemType.setVisibility(View.GONE);
+                                        }
+                                    });
+                                    Money money = new Money();
+                                    money.setReceive_id(item.getReceive_id());
+                                    money.setMoney(item.getMoney());
+                                    Log.e("zxz","我送到了");
+
+                                    money.save(new SaveListener<String>() {
+                                        @Override
+                                        public void done(String s, BmobException e) {
+                                            Log.e("zxz","我送到了"+s);
                                         }
                                     });
                                 }

@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.wty.app.uexpress.R;
 import com.wty.app.uexpress.data.model.Money;
-import com.wty.app.uexpress.data.model.Order;
+import com.wty.app.uexpress.data.model.Orders;
 import com.wty.app.uexpress.ui.BaseActivity;
 import com.wty.app.uexpress.util.SPUtil;
 
@@ -18,6 +18,7 @@ import butterknife.OnClick;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.QueryListener;
+import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 
 public class DetailsActivity extends BaseActivity {
@@ -50,7 +51,9 @@ public class DetailsActivity extends BaseActivity {
     private String phone_num;
     private String user_id;
     private String receive_id;
-    private Order order;
+    private Orders orders;
+    private String receiveId;
+    private String rmb;
 
     @Override
     protected int getContentLayout() {
@@ -59,9 +62,13 @@ public class DetailsActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        order = (Order) getIntent().getSerializableExtra("order");
-
-        objId = order.getObjectId();
+        orders = (Orders) getIntent().getSerializableExtra("order");
+        if(orders==null){
+            return;
+        }
+        objId = orders.getObjectId();
+        receiveId = orders.getReceive_id();
+        rmb = orders.getMoney();
         phone_num = SPUtil.getString(DetailsActivity.this, "phone_num");
 
         getDefaultNavigation().setTitle(getString(R.string.express_detail))
@@ -72,15 +79,15 @@ public class DetailsActivity extends BaseActivity {
                     }
                 });
         //查找Person表里面id为6b6c11c537的数据
-        BmobQuery<Order> bmobQuery = new BmobQuery<Order>();
-        bmobQuery.getObject(objId, new QueryListener<Order>() {
+        BmobQuery<Orders> bmobQuery = new BmobQuery<Orders>();
+        bmobQuery.getObject(objId, new QueryListener<Orders>() {
             @Override
-            public void done(Order object, BmobException e) {
+            public void done(Orders object, BmobException e) {
                 if (e == null) {
-                    Order o = object;
+                    Orders o = object;
                     user_id = o.getUser_id();
                     type = o.getType();
-                    receive_id = o.getReceive_id();
+                    DetailsActivity.this.receive_id = o.getReceive_id();
                     mName.setText("姓名："+o.getName());
                     mMobile.setText("手机号："+o.getUser_mobile());
                     mMoney.setText("报酬："+o.getMoney()+"元");
@@ -171,7 +178,7 @@ public class DetailsActivity extends BaseActivity {
                     builder2.setNegativeButton("确认", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            new Order().delete(objId, new UpdateListener() {
+                            new Orders().delete(objId, new UpdateListener() {
                                 @Override
                                 public void done(BmobException e) {
 
@@ -200,10 +207,10 @@ public class DetailsActivity extends BaseActivity {
                             builder.setNegativeButton("确认", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Order order = new Order();
-                                    order.setType(1);
-                                    order.setReceive_id(SPUtil.getString(DetailsActivity.this, "phone_num"));
-                                    order.update(objId,new UpdateListener() {
+                                    Orders orders = new Orders();
+                                    orders.setType(1);
+                                    orders.setReceive_id(SPUtil.getString(DetailsActivity.this, "phone_num"));
+                                    orders.update(objId,new UpdateListener() {
                                         @Override
                                         public void done(BmobException e) {
                                             mOtherBtn.setText("确认送到");
@@ -228,13 +235,13 @@ public class DetailsActivity extends BaseActivity {
                             builder1.setNegativeButton("确认", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    final Order order = new Order();
-                                    order.setType(2);
-                                    order.update(objId,new UpdateListener() {
+                                    final Orders orders = new Orders();
+                                    orders.setType(2);
+                                    orders.update(objId,new UpdateListener() {
                                         @Override
                                         public void done(BmobException e) {
                                             mOtherBtn.setText("已代取");
-                                            if(phone_num.equals(order.getReceive_id())){
+                                            if(phone_num.equals(orders.getReceive_id())){
                                                 mOrderType.setText("等待货主确认收货");
 
                                             }
@@ -260,9 +267,9 @@ public class DetailsActivity extends BaseActivity {
                                 builder2.setNegativeButton("确认", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        Order order = new Order();
-                                        order.setType(3);
-                                        order.update(objId,new UpdateListener() {
+                                        Orders orders = new Orders();
+                                        orders.setType(3);
+                                        orders.update(objId,new UpdateListener() {
                                             @Override
                                             public void done(BmobException e) {
                                                 mOrderType.setText("订单完成");
@@ -271,14 +278,12 @@ public class DetailsActivity extends BaseActivity {
                                             }
                                         });
                                         Money money = new Money();
-                                        money.setMoney(50);
-                                        money.setReceive_id(order.getReceive_id());
-                                        money.update(order.getObjectId(), new UpdateListener() {
+                                        money.setReceive_id(receiveId);
+                                        money.setMoney(rmb);
+                                        money.save(new SaveListener<String>() {
                                             @Override
-                                            public void done(BmobException e) {
-                                                Log.e("zxz",""+e.getErrorCode());
-                                                Log.e("zxz","修改成功");
-
+                                            public void done(String s, BmobException e) {
+                                                Log.e("zxz",s);
                                             }
                                         });
                                     }
@@ -300,9 +305,9 @@ public class DetailsActivity extends BaseActivity {
 //                        builder2.setNegativeButton("确认", new DialogInterface.OnClickListener() {
 //                            @Override
 //                            public void onClick(DialogInterface dialog, int which) {
-//                                Order order = new Order();
-//                                order.setType(4);
-//                                order.update(objId,new UpdateListener() {
+//                                Orders orders = new Orders();
+//                                orders.setType(4);
+//                                orders.update(objId,new UpdateListener() {
 //                                    @Override
 //                                    public void done(BmobException e) {
 //                                        mOrderType.setText("订单完成");

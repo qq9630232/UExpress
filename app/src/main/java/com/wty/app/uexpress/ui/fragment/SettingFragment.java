@@ -4,16 +4,25 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.TextView;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.wty.app.uexpress.BuildConfig;
 import com.wty.app.uexpress.R;
+import com.wty.app.uexpress.data.model.Money;
 import com.wty.app.uexpress.ui.BaseFragment;
 import com.wty.app.uexpress.ui.activity.LoginActivity;
 import com.wty.app.uexpress.util.SPUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
 
 /**
  * @author wty
@@ -24,11 +33,18 @@ public class SettingFragment extends BaseFragment {
     public static final String TAG = "SettingFragment";
     @BindView(R.id.quit_login)
     BootstrapButton mQuitLogin;
+    @BindView(R.id.money_tv)
+    TextView mMoneyTv;
+    @BindView(R.id.count)
+    TextView mCount;
+    private String phone_num;
+
     @Override
     protected int getLayoutResource() {
         return R.layout.fragment_setting;
     }
-
+    private List<Money> moneyList = new ArrayList<>();
+    private double mRmb = 0;
     @Override
     protected void onInitView() {
 
@@ -41,6 +57,27 @@ public class SettingFragment extends BaseFragment {
                 startActivity(intent);
                 getActivity().finish();
 
+            }
+        });
+        phone_num = SPUtil.getString(getContext(), "phone_num");
+
+        BmobQuery<Money> bmobQuery = new BmobQuery<Money>();
+
+        bmobQuery.findObjects(new FindListener<Money>() {
+            @Override
+            public void done(List<Money> list, BmobException e) {
+                if(!TextUtils.isEmpty(phone_num)){
+                    for (Money money : list) {
+                        if(phone_num.equals(money.getReceive_id())){
+                            moneyList.add(money);
+
+                            mRmb = mRmb+Double.parseDouble(money.getMoney());
+
+                        }
+                    }
+                }
+                mCount.setText("总接单："+moneyList.size()+"单");
+                mMoneyTv.setText("总赏金："+mRmb+"元");
             }
         });
     }
